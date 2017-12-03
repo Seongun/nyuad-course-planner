@@ -1,0 +1,33 @@
+{
+  "name": "nyuad-course-planner",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "dependencies": {
+    "ejs": "^2.5.7",
+    "nodemon": "^1.12.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Seongun/nyuad-course-planner.git"
+  },
+  "keywords": [
+    "Four",
+    "year",
+    "course",
+    "planner",
+    "for",
+    "NYUAD"
+  ],
+  "author": "Seongun Si",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Seongun/nyuad-course-planner/issues"
+  },
+  "homepage": "https://github.com/Seongun/nyuad-course-planner#readme"
+}

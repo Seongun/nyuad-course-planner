@@ -1,0 +1,37 @@
+app is a proper course database
+
+No need to crawl on ad classes because I found how the official nyuad website gets its courses - they maintain an XML file of everything and you just need to parse that
+
+But yeah for other campus we need to crawl Albert
+I can do the crawler part too if you don't want to
+And for the app now the flask backend is literally reading the XML file I downloaded to local storage a year ago
+I think if we have a database and a crawler (for AD it's just fetching a file), then we can regularly run the crawler and update our database
+
+
+Basically I want a SQL database with a course table, so that we have a consistent format for course data
+
+So probably just gonna have a 
+
+
+
+majors:
+
+major name,
+major id,
+pre requisites,
+
+
+
+
+course:
+
+course number,
+course title,
+instructor_id,
+pre-requisites,
+semester offered, 
+course category (the requirements it satisfy),
+course description,
+
+
+But it could also be made much more sophisticated - which I think is kinda what NYU IT should be doing with their disorganized and inconsistent Albert course entries
