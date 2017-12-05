@@ -4,7 +4,7 @@ var Request = require('request');
 var bodyParser = require('body-parser');
 var _ = require('underscore');
 var getJsonClasses = require("./getClasses");
-
+var crawler = require("./albertScraper");
 
 //Create an 'express' object
 var app = express();
@@ -24,11 +24,11 @@ app.use(bodyParser.json());
 
 //DATABASE CONFIG
 
-// var cloudant_USER = 'YOUR-USER-NAME';
-// var cloudant_DB = 'YOUR-DB-NAME';
-// var cloudant_KEY = 'YOUR-KEY';
-// var cloudant_PASSWORD = 'YOUR-PASSWORD';
-// var cloudant_URL = "https://" + cloudant_USER + ".cloudant.com/" + cloudant_DB;
+var cloudant_USER = '63282ab8-00b3-41dd-8750-bb9ed6f79fb0-bluemix';
+var cloudant_DB = 'mashups_final';
+var cloudant_KEY = 'dearienteringdoweendains';
+var cloudant_PASSWORD = '87dbe20c67c5499aa65698458a46ac4598459b01';
+var cloudant_URL = "https://" + cloudant_USER + ".cloudant.com/" + cloudant_DB;
 
 //ADD CORS TO ALL ROUTES
 app.use(function(req, res, next) {
@@ -131,5 +131,11 @@ app.get('*', function(request, response){
 
 
 //Start the server
-app.listen(3000);
+var port= process.env.PORT || 3000;
+app.listen(port);// changed for the sake of heroku
 console.log("Express App running at localhost:3000");
+
+
+
+
+

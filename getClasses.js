@@ -1,5 +1,3 @@
-console.log("in getClasses");
-
 const classes= [
   {
     "ID": "ACS-AD 101X", 

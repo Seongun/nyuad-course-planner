@@ -106,3 +106,12 @@ input, select {
   font-family: inherit;
   color: #565656;
 }
+
+
+.statusBar{
+  text-align: center;
+}
+
+.notOkay{
+  color:red;
+}
