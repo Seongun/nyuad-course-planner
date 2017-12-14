@@ -67,6 +67,11 @@ But it could also be made much more sophisticated - which I think is kinda what 
 6. Make things look more beautiful in general.
 
 
+7. Load base major template options (i.e. cs, im, srpp, etc)
+
+8. change color to a bit violet. 
+
+
 
 
 
