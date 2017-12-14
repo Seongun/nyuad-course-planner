@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
-  "engines":{
+  "engines": {
     "node": "^8.9.1"
   },
   "dependencies": {
@@ -11,6 +11,7 @@
     "ejs": "^2.5.7",
     "js-crawler": "^0.3.19",
     "nodemon": "^1.12.1",
+    "puppeteer": "^0.13.0",
     "request": "^2.83.0"
   },
   "devDependencies": {},

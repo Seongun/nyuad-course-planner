@@ -2,9 +2,10 @@
 var express = require('express');
 var Request = require('request');
 var bodyParser = require('body-parser');
+
 var _ = require('underscore');
 var getJsonClasses = require("./getClasses");
-var crawler = require("./albertScraper");
+// var crawler = require("./albertScraper");
 
 //Create an 'express' object
 var app = express();
@@ -30,6 +31,7 @@ var cloudant_KEY = 'dearienteringdoweendains';
 var cloudant_PASSWORD = '87dbe20c67c5499aa65698458a46ac4598459b01';
 var cloudant_URL = "https://" + cloudant_USER + ".cloudant.com/" + cloudant_DB;
 
+
 //ADD CORS TO ALL ROUTES
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -50,7 +52,9 @@ app.get('/', function(req, res){
 app.get("/myPage", function(req, res){
 	//determine who the user is
 	const user= null; 
-	res.render('userProfile', {page: user});
+	res.send("me? who am i?!");
+
+	// res.render('userProfile', {page: user});
 });
 
 
@@ -91,20 +95,6 @@ app.post("/save", function(req,res){
 app.get("/api/all", function(req,res){
 	console.log('Making a db request for all entries');
 	
-	// Use the Request lib to GET the data in the CouchDB on Cloudant
-	// Request.get({
-	// 	url: cloudant_URL + "/_all_docs?include_docs=true",
-	// 	auth: {
-	// 		user: cloudant_KEY,
-	// 		pass: cloudant_PASSWORD
-	// 	},
-	// 	json: true
-	// },
-	// function (error, response, body){
-	// 	var theRows = body.rows;
-	// 	//Send the data
-	// 	res.json(theRows);
-	// });
 
 });
 
@@ -118,12 +108,12 @@ app.get("/course-ad", function(req,res){
 	const parsedClassesJson = getJsonClasses();
 	res.json(parsedClassesJson);
 
+
 });
 
 
 
 app.get('*', function(request, response){
-	console.log("whoooaattt");
 	response.send("don't you snoop around! There's nothing for you here!");
 });
 

@@ -1,0 +1,17 @@
+Canvas based model
+
+
+1. hasError:
+	set background border: red
+	else set it green/grey
+
+2. addClass:
+	user types in class name and clicks select.
+	-> adds dependency
+
+
+3. Have an index above that is called "Katya's Tolerance".
+
+
+
+4. 

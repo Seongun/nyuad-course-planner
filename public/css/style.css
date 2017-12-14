@@ -1,8 +1,11 @@
 body{
-  margin: 1em;
-  font-family: 'Open Sans', sans-serif;
-  color: #FFFFFF;
-  background: #565656;
+  position: absolute;
+  top: 0;
+}
+
+.title{
+  text-align: center;
+  font-size: 4rem;
 }
 
 .small-course{
@@ -12,22 +15,6 @@ body{
   overflow: hidden;
   font-size: 0.6em;
   margin: 2px;
-}
-
-h1{
-  text-align: center;
-  margin: 40px 0 60px 0;
-  font-family: 'Poiret One', cursive;
-  letter-spacing: 0.2em;
-}
-
-main {
-  clear: both;
-}
-
-#year-switch {
-  width: 140px;
-  margin: auto;
 }
 
 .course-list {
@@ -47,17 +34,17 @@ main {
   border: solid;
   border-width: 1px;
 }
-
+/*
 button {
    display: inline-block;
    background: transparent;
    border: none;
-}
+}*/
 
 #course-box{
   padding: 0;
   margin: 5px;
-  height: 520px;
+  height: 400px;
   overflow: scroll;
   overflow-x: hidden;
 }
@@ -98,8 +85,6 @@ button {
 }
 
 #savetoPDF {
-  margin-top: 30px;
-  float: right;
 }
 
 input, select {
@@ -107,11 +92,27 @@ input, select {
   color: #565656;
 }
 
-
 .statusBar{
   text-align: center;
+}
+
+.padding5px{
+  padding:5px;
+  margin: 5px;
 }
 
 .notOkay{
   color:red;
 }
+
+
+
+.topComponent{
+  position:absolute;
+  right: 10px;
+  top: 10px;
+}
+.bottomComponent{
+
+}
+  

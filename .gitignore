@@ -1,3 +1,4 @@
 .DS_Store
 objectives_for_completion.txt
 node_modules
+scraper/creds.js
