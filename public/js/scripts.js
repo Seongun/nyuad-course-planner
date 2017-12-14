@@ -163,9 +163,16 @@ function filter_course_list(event) {
       // check for semester
       var semester = (criteria.semester === -1 || course.semester[criteria.semester] === 1);
       // check if course is offered in any of the semesters.
-      var offered = course.semester[0] || course.semester[1] || course.semester[2] || course.semester[3];
+      var offered = course.semester[0]===1 || course.semester[1]===1 || course.semester[2]===1 || course.semester[3]===1;
       // check if course has already been selected.
       var notSeen = true;
+
+      if(title =="Jews in the Muslim World in the Middle Ages"){
+
+        console.log("is it offered?");
+        console.log(offered);
+      }
+
       for( var i=0; i<classBoxes.length; i++){
         if(classBoxes[i].name == course.title){
           notSeen= false;
@@ -267,10 +274,10 @@ function mousePressed(){
 
     if (classBoxes[i].hovered){
         
-        //remove from the list, re-attach at the
-        if( mouseX > classBoxes[i].xBoxX && mouseY < classBoxes[i].xBoxY){
+        // remove from the list, re-attach at the
+        if( mouseButton ==RIGHT ){
 
-          classBoxes[i].deleteBox();
+          deleteBox(classBoxes[i]);
 
         }else{
 
@@ -460,7 +467,6 @@ YearBox.prototype.display = function(){
   var heightYear = height * 2 / 9;
   // console.log("x: "+x+" y: "+y+" width: "+width+" height: "+height);
   rect(x, y, widthYear, heightYear);
-
   for(var i=0; i<this.semesters.length; i++){
     this.semesters[i].update();
     this.semesters[i].display(widthYear, heightYear);
@@ -482,6 +488,24 @@ function SemesterBox(year, semester){
   this.hovered= false;
 }
 
+SemesterBox.prototype.canPlaceClass= function(){
+  var maxClass;
+  if(this.semesterId%2==0){
+    maxClass=6;
+  }else{
+    maxClass=2;
+  }
+
+  if(this.classes.length >= maxClass ){
+    return false
+  }
+
+  var semester= int2semester[(this.semesterId%4)];  
+  var validSemester = (dragElement.offeredSemester.indexOf(semester) > -1);
+  return validSemester;
+
+}
+
 SemesterBox.prototype.display = function(yearBoxWidth, yearBoxHeight){
   // console.log("we should be drawing this!");
 
@@ -492,9 +516,18 @@ SemesterBox.prototype.display = function(yearBoxWidth, yearBoxHeight){
   this.y = 20 + height/4 * this.year + (this.semester < 2 ? 0: yearBoxHeight/2);
   this.widthSemester =  this.semesterId%2 === 0 ? yearBoxWidth * 3.5/5 : yearBoxWidth * 1/5;
   this.heightSemester = yearBoxHeight / 3;
-
+  if(dragging){
+    if(this.canPlaceClass()){
+      fill('rgba(50,205,50,0.5)');
+    }else{
+      fill('rgba(105, 105, 105, 0.5)');
+    }
+  }else{
+    fill('rgba(103, 188, 219, 0.25)');
+  }
   // console.log("x: "+x+" y: "+y+" width: "+width+" height: "+height);
   rect(this.x, this.y, this.widthSemester, this.heightSemester);
+  noFill();
 
   for(var i=0; i<this.classes.length; i++){
 
@@ -503,7 +536,6 @@ SemesterBox.prototype.display = function(yearBoxWidth, yearBoxHeight){
     var classX = this.x + 2 + classWidth * i;
     var classY = this.y + 2;
     
-
     this.classes[i].update();
     this.classes[i].display(classX,classY,classWidth,classHeight);
   }
@@ -557,12 +589,14 @@ ClassBox.prototype.display = function(x,y,width,height){
   var strokeWeightVal = 1.5;
   if(this === dragElement ){
 
-    stroke('rgb(0,255,0)');
+    stroke('rgb(162, 171, 88)');
     strokeWeight(strokeWeightVal);
+
+    fill('rgba(162, 171, 88, 0.5)');
 
     //this box is being dragged.
     rect(mouseX+offsetX, mouseY+offsetY, this.width, this.height);
-
+    noFill();
     stroke('black');
     strokeWeight(1);
     textAlign('center');
@@ -571,16 +605,16 @@ ClassBox.prototype.display = function(x,y,width,height){
 
   }else{
 
-     if(this.hovered){
-
+     if(this.hovered && !dragging){
+      fill('rgba(182, 191, 88, 0.5)');
       rect(mouseX, mouseY, 300, 150);
-      fill('rgba(0,255,0, 0.25)');
       stroke('black');
       strokeWeight(1);
       textAlign('center');
       textSize(15);
       text(this.classNumber+" :\n"+ this.name+"\n"+"offered: "+ this.offeredSemester.join(", ")+"\ndescription: "+ this.info+"\npreRequisites: "+this.preReqs.join(", "), mouseX, mouseY, 300, 300 );
       strokeWeightVal+=2;
+      noFill();
     }
 
 
@@ -592,13 +626,16 @@ ClassBox.prototype.display = function(x,y,width,height){
    
     if(this.hasProblem){
 
-      stroke('red');   
+      fill('rgba(228, 68, 36,0.5)');
+
    
     }else{
 
-      stroke('rgb(0,255,0)');
+      // stroke('rgb(0,255,0)');
+      fill('rgba(162, 171, 88, 0.5)');
 
     }
+
    
     strokeWeight(strokeWeightVal);
     rect(this.x, this.y, this.width, this.height);
@@ -608,9 +645,7 @@ ClassBox.prototype.display = function(x,y,width,height){
     textAlign('center');
     textSize(10);
     text(this.classNumber+" :\n"+ this.name, this.x+5, this.y+5, this.width, this.height );
-
-
-
+    noFill();
 
 
   }
@@ -638,11 +673,40 @@ ClassBox.prototype.checkHoverState = function(){
 };
 
 
-ClassBox.prototype.deleteBox = function(){
-  console.log("deleted the class");
-  //first get rid of this from the array
+function deleteBox(classesBox){
+  // console.log("deleted the class");
+  // //first get rid of this from the array
 
-  //update class array object to allow for searching this again.
+  if(classesBox.semesterId===-1){
+
+    var index= unselectedClasses.classes.indexOf(classesBox);
+
+    var index2= classBoxes.indexOf(classesBox);
+    console.log(index);
+    console.log(index2);
+
+    if(index>-1 && index2 >-1){
+         unselectedClasses.classes.splice(index,1);
+         classBoxes.splice(index,1);
+    }else{
+      alert("Error: deleting failed!");
+    }
+  
+  }else{
+
+    var tmpDragging = dragElement;
+    dragElement = classesBox;
+    relocateClassBox(classesBox.semesterId, -1);
+    dragElement=tmpDragging;
+
+  }
+  // if(classesBox.semesterId!=-1){
+  //     var tmpDragging = dragElement;
+  //   dragElement = classesBox;
+  //   relocateClassBox(classesBox.semesterId, -1);
+  //   dragElement=tmpDragging;
+  // }
+
 
 }
 
@@ -670,8 +734,32 @@ function verifyValidSemester(toSemesterId){
 }
 
 function relocateClassBox(fromSemesterId, toSemesterId){
- 
-  if ( verifyValidSemester(toSemesterId) ){
+  var maxClass;
+  var toSemester = toSemesterId%4;
+  var toYear = (toSemesterId-toSemester )/4
+  var semesterObject = fourYears[toYear].semesters[toSemester];
+  if(toSemesterId==-1){
+    semesterObject = unselectedClasses;
+  }else{
+
+
+    if(toSemesterId%2==0){
+      maxClass=6;
+    }else{
+      maxClass=2;
+    }
+
+  if(semesterObject.classes.length >= maxClass ){
+    $('#status').text("This semester is already full! First remove classes.");
+    return false
+  } 
+
+  }
+
+
+
+
+  if ( verifyValidSemester(toSemesterId) || toSemesterId==-1 ){
 
   var fromElement, toElement;
   var index;

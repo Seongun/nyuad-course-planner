@@ -41,3 +41,40 @@ course description,
 
 
 But it could also be made much more sophisticated - which I think is kinda what NYU IT should be doing with their disorganized and inconsistent Albert course entries
+
+
+--------------------------------------------------
+
+1. Get Data, parse Data
+
+
+1.5 Database
+
+1.6 Deploy
+
+2. Delete Class functionality
+
+
+3. Make Save to pdf be more beautiful
+
+
+4. Figure out a better way of displaying errors / status
+
+
+5. Pre-requisite functionality. Make a class's color stay red as long as its pre-reqs are not met
+
+
+6. Make things look more beautiful in general.
+
+
+
+
+
+
+
+
+
+
+
+
+
