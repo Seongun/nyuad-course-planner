@@ -50,7 +50,7 @@ app.get('/', function(req, res){
 
 //Main Page Route - Show SINGLE word via Clientside Request
 app.get("/about", function(req, res){	
-	res.render('about');
+	res.render('about.html');
 
 });
 
@@ -78,7 +78,7 @@ app.get("/api/course-ad", function(req,res){
 
 
 
-app.get('*', function(request, response){
+app.get('/*', function(request, response){
 	response.send("don't you snoop around! There's nothing for you here!");
 });
 

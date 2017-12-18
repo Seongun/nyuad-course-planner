@@ -1,6 +1,8 @@
 body{
   position: absolute;
   top: 0;
+  overflow-x: hidden;
+  overflow-y:hidden;
 }
 
 .title{
@@ -109,7 +111,7 @@ input, select {
 
 .topComponent{
   position:absolute;
-  width: 35%;
+  width: 38%;
   right: 10px;
   top: 10px;
 }
@@ -118,8 +120,11 @@ input, select {
 }
   
 #status{
-  width: 68%;
+  width: 58%;
   font-size: 2rem;
 
 
+}
+.buttonBoxes{
+  width: 42%;
 }

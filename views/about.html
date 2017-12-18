@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<style>
+
+body, html{
+	width:100%;
+	height:100%;
+	
+	padding:0;
+	margin:0;
+
+}
+
+.title{
+	text-align: center;
+	font-size: 2.5rem;
+	color: purple;
+
+}
+
+.sub-title{
+
+	font-size: 1.5rem;
+	color: blue;
+
+}
+
+
+.fullScreen{
+
+	text-align: center;
+	width:100%;
+	height:100%;
+
+}
+
+
+#searchArea{
+	position: absolute;
+	top: 30%;
+	width:100%;
+	text-align: center;
+
+
+}
+#yourChoice{
+
+	text-align: center;
+	color: blue;
+	font-size: 2rem;
+
+}
+
+#songSearch{
+
+
+	text-align: left;
+	font-size: 1rem;
+	padding: 20px;
+	width: 50%;
+	border-width: 5px;
+	border-color: green;
+	border-style: solid;
+		
+}
+
+#artistSearch{
+	font-size: 1rem;
+	text-align: left;
+	padding: 20px;
+	width: 50%;
+	border-width: 5px;
+	border-color: yellow;
+	border-style: solid;
+}
+
+
+#control_menu{
+	position: absolute;
+	width: 100%;
+	bottom: 10%;
+}
+
+#instructions{
+
+	position: absolute;
+	width: 70%;
+	text-align: center;
+	top: 20%;
+	border-width: 2px;
+	border-style: solid;
+	border-color: pink;
+
+	 left: 0; 
+  	 right: 0; 
+	 margin-left: auto; 
+	 margin-right: auto;
+}
+
+.button{	
+	width: 20%;
+	margin:auto;
+	padding: 15px 32px;
+	display: inline-block;
+	color: white;
+	background-color: #f44336;
+	border-color: white;
+	border-width: 2px;
+	border-style: solid;
+	text-decoration: none;
+
+}
+
+.button:hover{
+
+	color: #f44336;
+	background-color: white;
+	border-color: #f44336;
+	border-width: 2px;
+	border-style: solid;
+
+}
+
+#returnButton{
+	opacity: 0.5;
+}
+#returnButton:hover{
+	opacity:1;
+}
+
+#speed{
+	font-size: 1rem;
+	color:white;
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+
+}
+
+#lyrics{
+	font-size: 4rem;
+	 color:white;
+	 text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+}
+
+
+#aboutlink{
+	text-decoration: none;
+}
+
+
+.sectionTitle{
+	text-align: center;
+	font-size: 1.5rem;
+}
+
+
+.aboutBox{
+	width: 50%;
+	margin: auto;	
+}
+.question{
+	color: purple;
+	text-align: left;
+/*	font-weight: bold;
+*/	font-size: 1.2rem;
+}
+.question::before{
+	content: "\A\A\A";
+	white-space: pre
+}
+.question::after{
+	content: "\A\A";
+	white-space: pre
+}
+
+.paddingParagraph{
+	padding-bottom: 3rem;
+
+}
+
+
+
+
+		</style>
+
+
+
+		<meta charset="utf-8"/>
+		<!-- <meta name="viewport" content="width=device-width"> -->
+		<title>NYUAD Course-Planner</title> 
+		<link rel="stylesheet" type="text/css" href="../public/style.css" />
+	</head>
+	<body>
+		<a href="./index.html" id="aboutlink" style="float: right; position: absolute; top:0px; right:0px; color: orange"><h1>Back to Planner<h1></a>
+
+		<!-- CONTENT GOES HERE -->
+		<h1 class = "title">About NYUAD Course Planner</h1>
+			<div class="aboutBox">
+				<p class="paddingParagraph">
+					NYUAD course planner is an application that allows users to drag and drop courses while allowing them to see if their plan satisfies factors such as graduation requirment. It is a revolutionary tool that will forever change how NYUAD students (and all college students in the future) approach their college course planning. 
+				</p>
+				<hr>
+				<p class="paddingParagraph">
+					<span class="sectionTitle">Design choices</span>
+					
+					<span class="question">1. Why make this?</span>
+					It is a grim day for us all. The deadline for study abroad application is ticking. Being a true university student, you have managed to push it till the very last possible moment. You go through all the classes on Albert, trying desperately to figure out what is going on. The classes take an age to load, and some, you find, are not recognized as a cross-dependency. Your million tabs on Chrome start getting so tiny that you can barely see which one is which anymore. At the end of it all, you decide to get back on the path to world domination you had abandoned long ago when Seizure-oke saved you.
+
+
+					<span class="question">2. It looks shabby?</span>
+					Haters gonna hate. I admit that it could have been improved in terms of the looks, especially in terms of the color scheme. I believe that it would have been much nicer if I were to have more time to fidget with the UI, rather than working with other things like scraper. Well, that will come in time.
+					<br>
+
+					<span class="question">3. Why is your data old?</span>
+					Be...because the scraper isn't done yet. I am choking on my tears as I realize that I cannot finish the scraper in time. The scraper uses Headless Chrome and Puppeteer to navigate through the pages of mobile Albert, which makes slightly more sense than the normal Albert but is still quite infuriating. I'm at the final stage where I'm fixing the bugs, but alas there is no time.
+
+					<span class="question">5. I realized that there are some functionalities like right mouse click. Why not make it more intuitive?</span>
+					
+					I thought about having a modal that users must click in order to get to the use page, instructing them on how to use this. This will be implemented in the future, but for now the users will just have to drag until they realize they could have simply left mouse clicked the whole time.
+
+					<span class="question">5. Why use modals for class load?</span>
+					
+					I have received criticism on having classes be loaded by Modals. I thought it to be more efficient to just have a set of classes I already considered to be draggable to different parts of the semester. Also, while the search itself is quite accomodating, it took even more space away from already cramped UI.
+				</p>
+
+				<hr>
+				<p class="paddingParagraph">	
+					
+					<span class="sectionTitle">Difficulties Faced</span>
+
+					<span class="question">1. Scraping</span>
+
+					I seriously think that I have worked on scraping Albert for more time than it had taken me to work on my two previous projects combined. Difficulties previously existing largely related to the fact that Albet is not a url based navigation website, and that coordinating the ajax based data loading and Puppeteer is quite confusing. It is almost complete, but there is still a bug in the last step which the search button clicks and yields no results. This will be addressed shortly after the submission.
+
+					<span class="question">2. P5 Beautifying</span>
+					I am constantly reminded during this class that I'm not the best designer around. Maybe I'll take a design class to make things look nicer.
+
+					<span class="question">3. Login</span>
+					In the future a passport based NYU Login will be implemented so that users can access their classes in a non pdf form like a JSON. This will allow them to simply load previously existing classes that they save into the planner so that they can make new class choices easily.
+
+					<hr>
+				</p>
+		<script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+		<script type="text/javascript" src="scripts.js"></script>
+	</body>
+</html>
