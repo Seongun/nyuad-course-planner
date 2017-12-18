@@ -13,9 +13,9 @@ async function run() {
 });
   const page = await browser.newPage();
   	// await page.goto('https://github.com/login');
-	await page.goto('https://admin.portal.nyu.edu/psp/paprod/EMPLOYEE/EMPL/?&cmd=login&errorCode=105&languageCd=ENG');
+	await page.goto('https://admin.portal.nyu.edu/psp/paprod/EMPLOYEE/EMPL/?&cmd=login&errorCode=105&languageCd=ENG',{waitUntil:'networkidle2'});
   	// await page.screenshot({ path: 'screenshots/github.png' });
- 
+
 	const USERNAME_SELECTOR ='#userid';//'#userid';
 	const PASSWORD_SELECTOR = '#pwd';
 	const BUTTON_SELECTOR = '#login > table > tbody > tr:nth-child(1) > td:nth-child(2) > input.psloginbutton';
@@ -70,7 +70,7 @@ async function run() {
 	const LIST_SUBJECT_SELECTOR = '#subject > option:nth-child(INDEX)';
 
 	const LOAD_CLASS_BUTTON_SELECTOR='#buttonSearch';
-	const CLASS_SEARCH_RESULTS_SELECTOR='#search-results';
+	const CLASS_SEARCH_RESULTS_SELECTOR='search-results';
 	const LOAD_SCHOOL_BUTTON_SELECTOR='#search-options > div:nth-child(6) > button';
 	const LOAD_SUBJECT_BUTTON_SELECTOR='#search-options > div.pull-left > div > button'
 
@@ -107,64 +107,66 @@ async function run() {
 		      }, schoolSelector);
 
 		    //select the school option
-		    page.select('select#search-acad-group', schoolName);
-
+		    await page.select('select#search-acad-group', schoolName);
 		    await page.click(LOAD_SCHOOL_BUTTON_SELECTOR);
-
-
-
-		 //    var subjectOptionsLength = await page.evaluate((sel) => {
-			//     return document.getElementById(sel).length;
-			// }, SUBJECT_SELECTOR);
-
-			// for(let l=2; l<=subjectOptionsLength; l++){
-
-			// 	let subjectSelector = LIST_SUBJECT_SELECTOR.replace("INDEX", i);
-		 //    	let subjectName = await page.evaluate((sel) => {
-			//         return document.querySelector(sel).getAttribute('value');
-			//     }, subjectSelector);
-
-			// }
-
-
 
 		    var subjectOptionsLength = await page.evaluate( (sel) => {
 		        return document.querySelector(sel).length;
 		      }, SUBJECT_SELECTOR);
+		    console.log("schoolName: "+schoolName);
 
-
-		    console.log(subjectOptionsLength);
 		    for(let j=2; j<=subjectOptionsLength; j++){
 		    	// console.log(subjectOptions[j].value);
-
+		    	console.log("at index: "+j);
 		    	let subjectSelector = LIST_SUBJECT_SELECTOR.replace("INDEX", j);
 
+		    	console.log("evaluating: "+ subjectSelector)
 			    let subjectValue = await page.evaluate((sel) => {
 			        return document.querySelector(sel).getAttribute('value');
 			      }, subjectSelector);
+			    console.log("got back subject: "+subjectValue);
 
-			    // console.log(subjectValue);
-
-		    	page.select('select#subject', subjectValue);
-
+		    	await page.select('select#subject', subjectValue);
 		    	await page.click(LOAD_SUBJECT_BUTTON_SELECTOR);
+		    	console.log("selected and clicked subject button");
+				
+				// navresponse = page.waitForNavigation(['networkidle0', 'load', 'domcontentloaded']);
+				// await page.waitForFunction('document.getElementById("buttonSearch")!=null');
+			
 				await page.click(LOAD_CLASS_BUTTON_SELECTOR);
+				console.log("selected and clicked load class button");
+
+				// await navresponse;  
+				//await page.waitForSelector('#search-results');	
+				await page.waitForFunction('document.getElementById("search-results").children.length > 0');
+				console.log("this is the issue");
 
 				var classesArr = await page.evaluate( (sel) => {
-					return document.getElementById(sel);
-				}, CLASS_SEARCH_RESULTS_SELECTOR );
-				console.log(classesArr);
 
-				var urlClasses ;
-				var resultValue;
-				for(let k=0; k<classesArr.length; k++){
-					
-					urlClasses = classesArr[k].getAttribute('href');
-					resultValue = urlClasses.slice(urlClasses.lastIndexOf('/'));
-					console.log(resultValue);
-					schoolObj.classes.push(resultValue);
-				}
+					var results = document.getElementById(sel).getElementsByTagName('a');
+					var resultArr =[];
+
+					for (var i=0; i<results.length; i++){
+						// console.log(i);
+						var name = results[i].previousSibling.previousElementSibling.innerText;
+						var urlClass = results[i].getAttribute('href');
+						var dataset= results[i].children[0].getAttribute('dataset');
+
+						// var dataInput = datset? dataset: undefined;
+					    var Obj ={
+
+					    	name: name,
+					        href: urlClass.slice(urlClass.lastIndexOf('/')),
+					    	data: dataset? dataset: undefined,
+					    }
+					    resultArr.push(Obj);
+					}
+
+					return resultArr
+				}, CLASS_SEARCH_RESULTS_SELECTOR );
+				console.log("index " +j +"'s classesArr length: "+ classesArr.length);
 		    }
+		    console.log("_________________\n\n");
 	 	 }
 	 	 console.log(schoolObj);
 

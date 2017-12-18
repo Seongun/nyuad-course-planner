@@ -167,12 +167,6 @@ function filter_course_list(event) {
       // check if course has already been selected.
       var notSeen = true;
 
-      if(title =="Jews in the Muslim World in the Middle Ages"){
-
-        console.log("is it offered?");
-        console.log(offered);
-      }
-
       for( var i=0; i<classBoxes.length; i++){
         if(classBoxes[i].name == course.title){
           notSeen= false;
@@ -215,7 +209,7 @@ function filter_course_list(event) {
 
  function getClassData(){
   $.ajax({
-    url: '/course-ad',
+    url: '/api/course-ad',
     type: 'GET',
     dataType: 'json',
     error: function(data){
@@ -292,7 +286,6 @@ function mousePressed(){
 }
 
 function mouseReleased() {
-  console.log("released");
   //if released at a semester, add the classBlock to the semester.
   //if not, remove it
  
@@ -305,7 +298,6 @@ function mouseReleased() {
 
       }else{
       
-          console.log("relocated element to unselected")
           relocateClassBox(dragElement.semesterId , -1);
       
       }
@@ -529,16 +521,41 @@ SemesterBox.prototype.display = function(yearBoxWidth, yearBoxHeight){
   rect(this.x, this.y, this.widthSemester, this.heightSemester);
   noFill();
 
-  for(var i=0; i<this.classes.length; i++){
+  if(this.classes.length==0){
 
-    var classWidth = (this.widthSemester - this.classes.length *2) / Math.max( 4 , this.classes.length )
+    textAlign('left');
+    textSize(20);
+    strokeWeight(1);
+    fill(0);
+    var textVal= int2semester[this.semesterId%4] + ", "+years[ (this.semesterId - this.semesterId%4) / 4 ]
+    text(textVal, this.x+10, this.y+30, this.width, this.height );
+    noFill();
+
+  }else{
+
+  var maxClass;
+    if(this.semesterId%2==0){
+      maxClass=6;
+    }else{
+      maxClass=2;
+    }
+
+
+
+    for(var i=0; i<this.classes.length; i++){
+
+    var classWidth = (this.widthSemester - this.classes.length *2) / Math.min( maxClass , this.classes.length )
     var classHeight = this.heightSemester - 4;
     var classX = this.x + 2 + classWidth * i;
     var classY = this.y + 2;
     
     this.classes[i].update();
     this.classes[i].display(classX,classY,classWidth,classHeight);
+
   }
+
+  }
+ 
 
 };
 
@@ -721,11 +738,10 @@ function verifyValidSemester(toSemesterId){
   if(validSemester){
 
     console.log("valid semester");
-    $('#status').text("");
+    $('#status').text("Drag classes into the appropriate semester");
 
   }else{
-
-    $('#status').text("this class is not offered in "+ semester+" try "+ dragElement.offeredSemester.join(" or "));
+    $('#status').text("This class is not offered in "+ semester+" try "+ dragElement.offeredSemester.join(" or "));
     // $('#status').style('color', 'red');
     // alert("the class is not offered in this semester");
 
@@ -742,7 +758,6 @@ function relocateClassBox(fromSemesterId, toSemesterId){
     semesterObject = unselectedClasses;
   }else{
 
-
     if(toSemesterId%2==0){
       maxClass=6;
     }else{
@@ -755,8 +770,6 @@ function relocateClassBox(fromSemesterId, toSemesterId){
   } 
 
   }
-
-
 
 
   if ( verifyValidSemester(toSemesterId) || toSemesterId==-1 ){
@@ -804,4 +817,51 @@ function relocateClassBox(fromSemesterId, toSemesterId){
   toElement.push(dragElement);
 
   }
+}
+
+
+
+
+// Default export is a4 paper, portrait, using milimeters for units
+function savetoPDF(){
+  years=["Freshman", "Sophomore", "Junior", "Senior"]
+  var doc = new jsPDF()
+
+
+
+  var counter=0;
+  for (var i=0; i<4; i++){
+    //per year
+    doc.setFontSize(14);
+    counter++;
+    doc.text(years[i], 10, 10+(counter*5));
+    counter++;
+
+    var planner = fourYears[i];
+    var semesters = planner.semesters;
+
+
+    for (var j=0; j<semesters.length; j++){
+        var semesterId = semesters[j].semesterId;
+
+        doc.setFontSize(12);
+        doc.text(int2semester[semesterId%4], 10, 10+(counter*5));
+        counter++;
+
+      var classes = semesters[j].classes;
+
+      for (var k=0; k<classes.length; k++){
+        counter++
+        var innertext = classes[k].name;
+        doc.setFontSize(10);
+        doc.text(innertext, 10, 10+(counter*5));
+        counter++;
+        if (counter > 56){
+          doc.addPage('a4');
+          counter=0;
+        }
+      }
+    }
+  }
+    doc.save('FourYearPlan.pdf');
 }

@@ -9,8 +9,9 @@
   "dependencies": {
     "cheerio": "^1.0.0-rc.2",
     "ejs": "^2.5.7",
+    "express": "^4.16.2",
     "js-crawler": "^0.3.19",
-    "nodemon": "^1.12.1",
+    "nodemon": "^1.13.3",
     "puppeteer": "^0.13.0",
     "request": "^2.83.0"
   },

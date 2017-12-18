@@ -44,17 +44,14 @@ app.use(function(req, res, next) {
 
 
 app.get('/', function(req, res){
-	console.log("is this the real life");
+
 	res.render('index', {page: 'get all data'});
 });
 
 //Main Page Route - Show SINGLE word via Clientside Request
-app.get("/myPage", function(req, res){
-	//determine who the user is
-	const user= null; 
-	res.send("me? who am i?!");
+app.get("/about", function(req, res){	
+	res.render('about');
 
-	// res.render('userProfile', {page: user});
 });
 
 
@@ -63,46 +60,14 @@ app.post("/save", function(req,res){
 
 	//Get the data from the body
 	var data = req.body;
-	console.log(data);
-
-	//Send the data to the db
-	// Request.post({
-	// 	url: cloudant_URL,
-	// 	auth: {
-	// 		user: cloudant_KEY,
-	// 		pass: cloudant_PASSWORD
-	// 	},
-	// 	json: true,
-	// 	body: data
-	// },
-	// function (error, response, body){
-	// 	if (response.statusCode == 201){
-	// 		console.log("Saved!");
-	// 		res.json(body);
-	// 	}
-	// 	else{
-	// 		console.log("Uh oh...");
-	// 		console.log("Error: " + res.statusCode);
-	// 		res.send("Something went wrong...");
-	// 	}
- // });
- 	console.log("this is where the saving should have happened");
 });
 
-
-//GET objects from the database
-//Also a JSON Serving route (ALL Data)
-app.get("/api/all", function(req,res){
-	console.log('Making a db request for all entries');
-	
-
-});
 
 
 
 //GET objects from the database
 //Also a JSON Serving route (ALL Data)
-app.get("/course-ad", function(req,res){
+app.get("/api/course-ad", function(req,res){
 	// this should serve as a point where I query db.
 
 	const parsedClassesJson = getJsonClasses();

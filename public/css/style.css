@@ -109,6 +109,7 @@ input, select {
 
 .topComponent{
   position:absolute;
+  width: 35%;
   right: 10px;
   top: 10px;
 }
@@ -116,3 +117,9 @@ input, select {
 
 }
   
+#status{
+  width: 68%;
+  font-size: 2rem;
+
+
+}
