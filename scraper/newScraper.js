@@ -14,8 +14,8 @@ async function run() {
 	const RETURN_SELECTOR = "#NYU_CLS_DERIVED_BACK";
 	const PAGE_INFO_SELECTOR = "pt_pageinfo_win0"
 	const CLASS_INFO_SELECTOR = "ACE_NYU_CLS_SBDTLVW_CRSE_ID$INDEX"
-
-
+	// const CLASS_DESCRIPTION_SELECTOR ="ACE_NYU_CLS_SBDTLVW_CRSE_ID$INDEX"
+// ACE_NYU_CLS_SBDTLVW_CRSE_ID$144
 
 	let FIELD_SELECTOR = null;
 
@@ -36,18 +36,115 @@ async function run() {
 
 			
 		    // change the index to the next child
-			let classSelector = CLASS_INFO_SELECTOR.replace("INDEX", i);
+			let classSelector = CLASS_INFO_SELECTOR.replace("INDEX", index);
 
-		    let termNum = await page.evaluate((sel) => {
-		        return document.querySelector(sel).getAttribute('value');
-		     }, termSelector);
-		    semesterArr.push(termNum);
+		    let title = await page.evaluate((sel) => {
+		    	if(document.getElementById(sel)){
+		    	
+		    		return document.getElementById(sel).children[0].children[1].children[1].children[0].children[0].children[0].children[0].innerText
 
-		 	 
+		    	}else{
+
+		    		return null
+		    	
+		    	}
+
+		     }, classSelector);
+
+		 	if(!title){
+
+		 		break;
+		 	
+		 	}else{
+
+		 		//parse title
+		 		
+		 		let j; 	
+		 		let foundNum= false;
+		 		let first=true;
+		 		let arr = title.split(" ");
+		 		
+		 		var courseTitle = "";
+		 		var courseNum= "";
+
+
+		 		for(j=0; j<arr.length; j++){
+
+		 			if(foundNum){
+
+						if(!first){
+		 					courseTitle+=" ";
+		 				}
+		 				courseTitle+=arr[j];
+
+		 			}else if( arr[j].isInteger  ){
+
+		 				foundNum = true;
+		 				courseNum +=" "
+		 				courseNum += arr[j];
+		 				first=true;
+
+		 			}else{
+
+						if(!first){
+		 					courseNum+=" ";
+		 				}
+		 				first = false;
+		 				courseNum += arr[j];
+		 			
+		 			}
+
+		 		}
+		 		console.log(courseTitle);
+		 		console.log(courseNum);
+
+		 		//get class description, if it exists
+		 		 let description = await page.evaluate((sel) => {
+		 		 
+			    	if(document.getElementById(sel).children[0].children[1].children[1].children[0].children[0].children[0].children[2]){
+			    		
+			    		return document.getElementById(sel).children[0].children[1].children[1].children[0].children[0].children[0].children[2].children[0].innerText
+
+			    	}else{
+
+			    		return null
+			    	
+			    	}
+
+			     }, classSelector);
+
+		 		 console.log(description);
 
 
 
 
+		 		 //get term information, if it exists
+		 		 let term = await page.evaluate((sel) => {
+		 		 	
+			    	if(document.getElementById("ACE_NYU_CLS_SBDTLVW_CRSE_ID$"+sel).children[0].children[3]){
+			    		return document.getElementById("NYU_CLS_DERIVED_TERM$"+sel).getAttribute("title");
+
+			    	}else{
+
+			    		return null
+			    	
+			    	}
+
+			     }, i.toString() );
+		 		 let termResult;
+		 		 if(term){
+		 		 	 termResult = term.substr( term.search("Terms Offered: ")+15);
+		 		 	
+		 		 }else{
+		 		 	termResult = null;
+
+		 		 }
+			    
+			    console.log(termResult);
+
+		 	}
+
+		 	index+=1;
 
 		}
 
