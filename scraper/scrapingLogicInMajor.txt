@@ -1,0 +1,36 @@
+document.getElementById('ACE_NYU_CLS_SBDTLVW_CRSE_ID$1').children[0].children[1] -> contains most info
+
+document.getElementById('ACE_NYU_CLS_SBDTLVW_CRSE_ID$1').children[0].children[1].children[1].children[0]
+-> leads to the div reachable with ("win0divNYU_CLS_DERIVED_HTMLAREA_$144")
+.children[0].children[0]
+
+document.getElementById(#win0divNYU_CLS_DERIVED_HTMLAREA\24 103 > div > span:nth-child(1) > div.courseDescription.noDisplay > p)
+
+
+
+"COURSE TITLE && CLASS NUMBER"
+document.getElementById('ACE_NYU_CLS_SBDTLVW_CRSE_ID$1').children[0].children[1].children[1].children[0].children[0].children[0].innerText
+#fullDescription_227415
+
+document.getElementById('ACE_NYU_CLS_SBDTLVW_CRSE_ID$144').children[0].children[1].children[1].children[0].children[0].children[0]
+-> this is the span in which all the info lies. 
+
+
+"COURSE DESCRIPTION"
+
+first check if there is description for this class by looking at:
+document.getElementById('ACE_NYU_CLS_SBDTLVW_CRSE_ID$144').children[0].children[1].children[1].children[0].children[0].children[0].children[2]
+//potentially could not exist. if it doesn't exist, there is no description for this class.
+
+Get the actual value by:
+document.getElementById('ACE_NYU_CLS_SBDTLVW_CRSE_ID$144').children[0].children[1].children[1].children[0].children[0].children[0].children[2].children[0].innerText
+
+
+
+"GET TERM INFORMATION"
+
+first check:
+document.getElementById('ACE_NYU_CLS_SBDTLVW_CRSE_ID$1').children[0].children[3] -> contains term info. if this is not there, this class is not offered
+
+then, get the actual value by:
+document.getElementById('NYU_CLS_DERIVED_TERM$144').getAttriubte("title");

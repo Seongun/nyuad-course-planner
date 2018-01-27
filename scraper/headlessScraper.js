@@ -13,13 +13,14 @@ async function run() {
 });
   const page = await browser.newPage();
   	// await page.goto('https://github.com/login');
-	await page.goto('https://admin.portal.nyu.edu/psp/paprod/EMPLOYEE/EMPL/?&cmd=login&errorCode=105&languageCd=ENG',{waitUntil:'networkidle2'});
+	await page.goto('https://m.albert.nyu.edu/app/profile/login',{waitUntil:'networkidle2'});
   	// await page.screenshot({ path: 'screenshots/github.png' });
 
-	const USERNAME_SELECTOR ='#userid';//'#userid';
-	const PASSWORD_SELECTOR = '#pwd';
-	const BUTTON_SELECTOR = '#login > table > tbody > tr:nth-child(1) > td:nth-child(2) > input.psloginbutton';
+	const USERNAME_SELECTOR ='body > section > main > form > label:nth-child(3) > div > input';//'#userid';
+	const PASSWORD_SELECTOR = 'body > section > main > form > label:nth-child(4) > div > input';
+	const BUTTON_SELECTOR = 'body > section > main > form > button';
 
+	console.log("helloWorld");
 
 	//Login
 	await page.click(USERNAME_SELECTOR);
@@ -45,7 +46,7 @@ async function run() {
 	  }, LENGTH_SELECTOR_CLASS);
 
 	const LIST_TERM_SELECTOR = '#term > option:nth-child(INDEX)';
-	console.log(listLength);
+	// console.log(listLength);
 	semesterArr= [];
 
 
@@ -74,37 +75,52 @@ async function run() {
 	const LOAD_SCHOOL_BUTTON_SELECTOR='#search-options > div:nth-child(6) > button';
 	const LOAD_SUBJECT_BUTTON_SELECTOR='#search-options > div.pull-left > div > button'
 
-	var AllClassesAllYears =[];
+	var AllClassesAllYears ={
+
+		name: "all results",
+		semesters:[]
+	};
 
 	// loop through each semester's search page
-	for(var i=0; i<semesterArr.length; i++){
+	for(var k=0; k<semesterArr.length; k++){
+		console.log("at semester "+ k);
+
 		// console.log(i);
-		var semester=[];
+		var semester={
+
+			name: k.toString(),
+			schools: []
+
+		};
 
 		//enter the semester search page
-		await page.goto(url+'/'+semesterArr[i], {waitUntil:'networkidle2'} );
+		await page.goto(url+'/'+semesterArr[k], {waitUntil:'networkidle2'} );
 		
 		//get a list of academic group ( school names ) available
 		var groupListLength = await page.evaluate((sel) => {
 		    return document.getElementById(sel).length;
 		 }, SEARCH_GROUP_SELECTOR_CLASS);
 
-		var schoolArr=[];
-
 		var schoolObj={
 			name: null,
-			classes: [],
+			subjects: null,
 		};
 
-		//loop through the academic groups available.
+		//loop through the school groups available at this semester
 		for (let i = 2; i <= groupListLength; i++) {
-
+			
 	    // change the index to the next child
 		    let schoolSelector = LIST_SCHOOL_SELECTOR.replace("INDEX", i);
 
+		    //get school name
 		    let schoolName = await page.evaluate((sel) => {
 		        return document.querySelector(sel).getAttribute('value');
 		      }, schoolSelector);
+		    
+		    console.log("school: "+schoolName);
+
+		    schoolObj.name = schoolName;
+		    schoolObj.subjects =[];
 
 		    //select the school option
 		    await page.select('select#search-acad-group', schoolName);
@@ -113,44 +129,44 @@ async function run() {
 		    var subjectOptionsLength = await page.evaluate( (sel) => {
 		        return document.querySelector(sel).length;
 		      }, SUBJECT_SELECTOR);
-		    console.log("schoolName: "+schoolName);
 
+		    //loop through the subjects groups available at this school
 		    for(let j=2; j<=subjectOptionsLength; j++){
-		    	// console.log(subjectOptions[j].value);
-		    	console.log("at index: "+j);
+
 		    	let subjectSelector = LIST_SUBJECT_SELECTOR.replace("INDEX", j);
 
-		    	console.log("evaluating: "+ subjectSelector)
 			    let subjectValue = await page.evaluate((sel) => {
 			        return document.querySelector(sel).getAttribute('value');
 			      }, subjectSelector);
-			    console.log("got back subject: "+subjectValue);
 
+			    console.log("subject: "+subjectValue);
+
+			    //create subjectObj
+			    var subjectObj={
+		    		name: subjectValue,
+		    		classes: []
+		    	};
+		    	
 		    	await page.select('select#subject', subjectValue);
 		    	await page.click(LOAD_SUBJECT_BUTTON_SELECTOR);
-		    	console.log("selected and clicked subject button");
-				
-				// navresponse = page.waitForNavigation(['networkidle0', 'load', 'domcontentloaded']);
-				// await page.waitForFunction('document.getElementById("buttonSearch")!=null');
-			
-				await page.click(LOAD_CLASS_BUTTON_SELECTOR);
-				console.log("selected and clicked load class button");
+		    	await page.waitFor(1000); //see if there is a better alternative
 
-				// await navresponse;  
-				//await page.waitForSelector('#search-results');	
+
+				await page.click(LOAD_CLASS_BUTTON_SELECTOR);	
 				await page.waitForFunction('document.getElementById("search-results").children.length > 0');
-				console.log("this is the issue");
 
+				//get classes of this subject of this semester of this school
 				var classesArr = await page.evaluate( (sel) => {
 
 					var results = document.getElementById(sel).getElementsByTagName('a');
 					var resultArr =[];
 
-					for (var i=0; i<results.length; i++){
-						// console.log(i);
-						var name = results[i].previousSibling.previousElementSibling.innerText;
-						var urlClass = results[i].getAttribute('href');
-						var dataset= results[i].children[0].getAttribute('dataset');
+					for (var l=0; l<results.length; l++){
+
+						var name = results[l].previousSibling.previousElementSibling.innerText;
+
+						var urlClass = results[l].getAttribute('href');
+						var dataset= results[l].children[0].getAttribute('dataset');
 
 						// var dataInput = datset? dataset: undefined;
 					    var Obj ={
@@ -159,48 +175,53 @@ async function run() {
 					        href: urlClass.slice(urlClass.lastIndexOf('/')),
 					    	data: dataset? dataset: undefined,
 					    }
+
 					    resultArr.push(Obj);
 					}
-
 					return resultArr
 				}, CLASS_SEARCH_RESULTS_SELECTOR );
-				console.log("index " +j +"'s classesArr length: "+ classesArr.length);
+
+				// console.log(classesArr);
+				subjectObj.classes = classesArr;
+
+				// console.log(subjectObj);
+
+
+				
+				
+
 		    }
-		    console.log("_________________\n\n");
+
+	 	 semester.schools.push(schoolObj);
+	 	 schoolObj.subjects.push(subjectObj);
+				fs.writeFile("./"+schoolName+"_"+k.toString()+".json", JSON.stringify(schoolObj), (err) => {
+				    if (err) {
+				        console.error(err);
+				        return;
+				    };
+				    console.log("File has been created");
+		  });
+
 	 	 }
-	 	 console.log(schoolObj);
+
+	 	 AllClassesAllYears.semesters.push(semester);
 
 
 	}
 
-	//https://m.albert.nyu.edu/app/catalog/classsection/NYUNV/1184/20306
-	//where nyunv is the part describing school
-	//1184 is the part describing the semester
-	//20306 is the class number of the class
+	fs.writeFile("./results.json", JSON.stringify(AllClassesAllYears), (err) => {
+	    if (err) {
+	        console.error(err);
+	        return;
+	    };
+	    console.log("File has been created");
+	});
 
-
-
-
-		// await page.click("#LINK1$0");
-	// await page.waitForNavigation();
-
-	//redirect to the academics page
-	// await page.goto('https://admin.portal.nyu.edu/psp/paprod/EMPLOYEE/CSSS/c/SA_LEARNER_SERVICES.SSS_STUDENT_CENTER.GBL?FolderPath=PORTAL_ROOT_OBJECT.NYU_STUDENT_CTR&IsFolder=false&IgnoreParamTempl=FolderPath,IsFolder', {waituntil: "networkidle"});
-	//click "search" in albert
-    // const frame = await page.frames().find(f => f.name() === 'TargetContent');
-    // console.log(frame);	
-    // const button = await frame.$('DERIVED_SSS_SCR_SSS_LINK_ANCHOR2');
-    // console.log(button);
-    // button.click();	
-
-	// await page.click("#DERIVED_SSS_SCR_SSS_LINK_ANCHOR2");
-	// "https://admin.portal.nyu.edu/psp/paprod/EMPLOYEE/CSSS/c/SA_LEARNER_SERVICES.SSS_STUDENT_CENTER.GBL?FolderPath=PORTAL_ROOT_OBJECT.NYU_STUDENT_CTR&IsFolder=false&IgnoreParamTempl=FolderPath,IsFolder"
-
-
-  // browser.close();
+  browser.close();
 }
 
 run();
+
 
 //#login > table > tbody > tr:nth-child(1) > td:nth-child(2) > input.psloginbutton
 // #userid
