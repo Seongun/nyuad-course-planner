@@ -30,6 +30,7 @@ async function run() {
 		await page.click(FIELD_SELECTOR);	
 		await page.waitForFunction( 'document.getElementById("pt_pageinfo_win0").getAttribute("page") === "NYU_CLS_DTL"');
 
+
 		let index=0;
 		//loop through individual classes offered.
 		while(true){
@@ -115,13 +116,11 @@ async function run() {
 
 		 		 console.log(description);
 
-
-
-
 		 		 //get term information, if it exists
 		 		 let term = await page.evaluate((sel) => {
-		 		 	
-			    	if(document.getElementById("ACE_NYU_CLS_SBDTLVW_CRSE_ID$"+sel).children[0].children[3]){
+
+			    	if(document.getElementById("ACE_NYU_CLS_SBDTLVW_CRSE_ID$"+sel) && document.getElementById("ACE_NYU_CLS_SBDTLVW_CRSE_ID$"+sel).children[0].children[3]){
+
 			    		return document.getElementById("NYU_CLS_DERIVED_TERM$"+sel).getAttribute("title");
 
 			    	}else{
@@ -131,11 +130,15 @@ async function run() {
 			    	}
 
 			     }, i.toString() );
+
 		 		 let termResult;
+
 		 		 if(term){
+
 		 		 	 termResult = term.substr( term.search("Terms Offered: ")+15);
 		 		 	
 		 		 }else{
+
 		 		 	termResult = null;
 
 		 		 }
